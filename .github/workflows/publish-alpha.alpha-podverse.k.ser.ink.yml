@@ -33,12 +33,18 @@ jobs:
         run: |
           BASE_VERSION=$(node -p "require('./package.json').version")
           BASE_VERSION=$(echo "$BASE_VERSION" | sed 's/-.*//')
-          IMAGE_NAME=ghcr.io/${{ github.repository }}/podverse-web
+          # Allow overriding owner (push into your GHCR namespace) via secret GHCR_OWNER.
+          # If not provided, fall back to the runtime actor.
+          OWNER="${{ secrets.GHCR_OWNER }}"
+          if [[ -z "$OWNER" ]]; then
+            OWNER="$GITHUB_ACTOR"
+          fi
+          IMAGE_NAME=ghcr.io/$OWNER/podverse-web
 
           # Use the Actions-provided GITHUB_TOKEN (no PAT needed for same-repo GHCR access)
           TOKEN="${{ secrets.GITHUB_TOKEN }}"
           TAGS_JSON=$(curl -s -H "Authorization: Bearer $TOKEN" \
-            "https://ghcr.io/v2/${{ github.repository }}/podverse-web/tags/list")
+            "https://ghcr.io/v2/${{ github.actor }}/podverse-web/tags/list")
           echo "Raw tags JSON: $TAGS_JSON"
           TAGS=$(echo "$TAGS_JSON" | jq -r '.tags[]' | grep "alpha" || true)
           echo "Filtered alpha tags: $TAGS"
@@ -67,14 +73,15 @@ jobs:
           fi
 
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          echo "OWNER=$OWNER" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         run: |
-          docker build . -t ghcr.io/${{ github.repository }}/podverse-web:${{ steps.version.outputs.NEXT_VERSION }}
+          docker build . -t ghcr.io/${{ steps.version.outputs.OWNER }}/podverse-web:${{ steps.version.outputs.NEXT_VERSION }}
 
       - name: Build second Docker image from Dockerfile.build.alpha-podverse.k.ser.ink with Podverse env vars
         run: |
-          docker build . -f ./Dockerfile.build.alpha-podverse.k.ser.ink -t ghcr.io/${{ github.repository }}/podverse-web-deploy:${{ steps.version.outputs.NEXT_VERSION }}
+          docker build . -f ./Dockerfile.build.alpha-podverse.k.ser.ink -t ghcr.io/${{ steps.version.outputs.OWNER }}/podverse-web-deploy:${{ steps.version.outputs.NEXT_VERSION }}
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -85,8 +92,8 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.repository }}/podverse-web:${{ steps.version.outputs.NEXT_VERSION }}
+          docker push ghcr.io/${{ steps.version.outputs.OWNER }}/podverse-web:${{ steps.version.outputs.NEXT_VERSION }}
 
       - name: Push second Docker image
         run: |
-          docker push ghcr.io/${{ github.repository }}/podverse-web-deploy:${{ steps.version.outputs.NEXT_VERSION }}
+          docker push ghcr.io/${{ steps.version.outputs.OWNER }}/podverse-web-deploy:${{ steps.version.outputs.NEXT_VERSION }}
