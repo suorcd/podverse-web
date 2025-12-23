@@ -1,4 +1,4 @@
-name: Publish Alpha podverse-web Docker image
+name: aplpha-podverse.k.ser.ink Publish
 
 on:
   push:
