@@ -5,12 +5,22 @@ import { useQueues } from "../contexts/Queue";
 import { apiRequestService } from "../factories/apiRequestService";
 import { autoQueueIncrementActiveRow, useAutoQueue } from "../contexts/AutoQueue";
 
+/*
+  NOTE: If you want useQueueResourcesLoadActive to load the next item
+  from the queue or auto-queue, and to skip the current "now playing item",
+  you must call moveNowPlayingToHistory before calling this hook's returned function.
+  (example: TrackNextButton, TrackNextButtonMobile, and MediaPlayerControllerAV)
+*/
+
 export function useQueueResourcesLoadActive() {
   const { loggedInAccount } = useAccount();
-  const { autoQueueActiveRow, setAutoQueueActiveRow } = useAutoQueue();
+  const { autoQueueActiveRow, setAutoQueueActiveRow, autoQueueResources, autoQueueConfig } = useAutoQueue();
+  const { setQueues, setActiveQueue, setActiveQueueUpcomingResources } = useQueues();
 
   const loggedInAccountRef = useRef(loggedInAccount);
   const autoQueueActiveRowRef = useRef(autoQueueActiveRow);
+  const autoQueueResourcesRef = useRef(autoQueueResources);
+  const autoQueueConfigRef = useRef(autoQueueConfig);
 
   useEffect(() => {
     loggedInAccountRef.current = loggedInAccount;
@@ -20,10 +30,19 @@ export function useQueueResourcesLoadActive() {
     autoQueueActiveRowRef.current = autoQueueActiveRow;
   }, [autoQueueActiveRow]);
 
-  const { setQueues, setActiveQueue, setActiveQueueUpcomingResources } = useQueues();
+  useEffect(() => {
+    autoQueueResourcesRef.current = autoQueueResources;
+  }, [autoQueueResources]);
+
+  useEffect(() => {
+    autoQueueConfigRef.current = autoQueueConfig;
+  }, [autoQueueConfig]);
 
   return useCallback(async () => {
     const loggedInAccount = loggedInAccountRef.current;
+    const autoQueueConfig = autoQueueConfigRef.current;
+    const autoQueueActiveRow = autoQueueActiveRowRef.current;
+    const autoQueueResources = autoQueueResourcesRef.current;
 
     if (!loggedInAccount) {
       setQueues([]);
@@ -46,20 +65,25 @@ export function useQueueResourcesLoadActive() {
 
       const nowPlayingResource = await apiRequestService
         .reqQueueResourcesGetNowPlayingByQueueIdText(activeQueue.id_text);
+      
+      const upcomingQueueResources = await apiRequestService
+        .reqQueueResourcesGetAllUpcomingByQueueIdText(activeQueue.id_text);
 
       if (nowPlayingResource) {
-        const upcomingQueueResources = await apiRequestService
-          .reqQueueResourcesGetAllUpcomingByQueueIdText(activeQueue.id_text);
-
         combinedQueueResources.push(nowPlayingResource, ...upcomingQueueResources);
+      } else if (upcomingQueueResources.length > 0) {
+        combinedQueueResources.push(...upcomingQueueResources);
       }
 
       setActiveQueueUpcomingResources(combinedQueueResources);
 
       if (combinedQueueResources.length === 0) {
-        const autoQueueActiveRow = autoQueueActiveRowRef.current;
-        const newAutoQueueActiveRow = autoQueueIncrementActiveRow(autoQueueActiveRow);
-        setAutoQueueActiveRow(newAutoQueueActiveRow);
+        const nextAutoQueueActiveRow = autoQueueIncrementActiveRow(autoQueueActiveRow);
+        if (autoQueueResources[nextAutoQueueActiveRow]) {
+          setAutoQueueActiveRow(nextAutoQueueActiveRow);
+        } else if (autoQueueConfig.repeat) {
+          setAutoQueueActiveRow(0);
+        }
       }
     }
   }, []);
