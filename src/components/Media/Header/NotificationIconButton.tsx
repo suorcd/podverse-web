@@ -5,15 +5,20 @@ import { DTOChannel } from "podverse-helpers";
 import { FaBell, FaBellSlash } from "react-icons/fa6";
 import { useAccount } from "../../../contexts/Account";
 import { useModals } from "../../../contexts/Modals";
-import { Link } from "../../Link/Link";
+import { IconButton } from "../Header/IconButton";
 import { apiRequestService } from "../../../factories/apiRequestService";
-import styles from "../../../styles/components/Media/Podcast/PodcastHeaderButtons.module.scss";
+import { requestNotificationPermission } from "../../../external-services/firebase/requestNotificationPermission";
 
-type PodcastHeaderNotificationButtonProps = {
+type NotificationIconButtonProps = {
   channel: DTOChannel;
+  kind: "podcast" | "artist" | "album" | "playlist";
 }
 
-export const PodcastHeaderNotificationButton: React.FC<PodcastHeaderNotificationButtonProps> = ({ channel }) => {
+export const NotificationIconButton: React.FC<NotificationIconButtonProps> = ({ channel, kind }) => {
+  if ((kind === 'playlist')) {
+    return null;
+  }
+
   const tFeatures = useTranslations("features");
   const tInstructions = useTranslations("instructions");
   const { loggedInAccount, setLoggedInAccount } = useAccount();
@@ -36,6 +41,20 @@ export const PodcastHeaderNotificationButton: React.FC<PodcastHeaderNotification
       const updatedAccount = await apiRequestService.reqAccountNotificationChannelDelete({ channel_id_text: channel.id_text });
       await setLoggedInAccount(updatedAccount);
     } else {
+      // Read permission into a fresh variable to avoid TypeScript narrowing issues
+      const permissionBefore = (typeof Notification !== 'undefined') ? Notification.permission : undefined;
+
+      if (permissionBefore !== 'granted') {
+        // Request permission first
+        await requestNotificationPermission();
+      }
+
+      // Re-read permission after the async call
+      const permissionAfterRequest = (typeof Notification !== 'undefined') ? Notification.permission : undefined;
+      if (permissionAfterRequest !== 'granted') {
+        return;
+      }
+
       const updatedAccount = await apiRequestService.reqAccountNotificationChannelCreate({ channel_id_text: channel.id_text });
       await setLoggedInAccount(updatedAccount);
     }
@@ -44,18 +63,19 @@ export const PodcastHeaderNotificationButton: React.FC<PodcastHeaderNotification
   const iconNode = isSubscribed ? <FaBell /> : <FaBellSlash />;
 
   const label = isSubscribed
-    ? tFeatures("notifications.disable_notifications_for_this_podcast")
-    : tFeatures("notifications.enable_notifications_for_this_podcast");
+    ? tFeatures(`notifications.disable_notifications_for_this_${kind}`)
+    : tFeatures(`notifications.enable_notifications_for_this_${kind}`);
 
   return (
-    <Link
+    <IconButton
       type="button"
       onClick={() => toggleNotification()}
-      className={styles.button}
-      aria-label={label}
+      ariaLabel={label}
       title={label}
-      color="secondary">
+      color="secondary"
+      isGold={isSubscribed}
+    >
       {iconNode}
-    </Link>
+    </IconButton>
   )
 }
