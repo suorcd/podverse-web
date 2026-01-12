@@ -155,8 +155,15 @@ export function SettingsNotifications() {
           up_endpoint: endpoint,
           up_auth_key: authKey
         });
-        setUPRegistered(true);
-        setUPEndpoint(endpoint);
+        // Re-fetch UP device to ensure state is in sync
+        const upDevice = await apiRequestService.reqAccountUPDeviceGetForAccount();
+        if (upDevice) {
+          setUPRegistered(true);
+          setUPEndpoint(upDevice.up_endpoint);
+        } else {
+          setUPRegistered(false);
+          setUPEndpoint(null);
+        }
         setShowUPForm(false);
         setUPAuthKeyInput('');
       });
@@ -175,8 +182,15 @@ export function SettingsNotifications() {
         if (upEndpoint) {
           await apiRequestService.reqAccountUPDeviceDelete({ up_endpoint: upEndpoint });
         }
-        setUPRegistered(false);
-        setUPEndpoint(null);
+        
+        const upDevice = await apiRequestService.reqAccountUPDeviceGetForAccount();
+        if (upDevice) {
+          setUPRegistered(true);
+          setUPEndpoint(upDevice.up_endpoint);
+        } else {
+          setUPRegistered(false);
+          setUPEndpoint(null);
+        }
         setShowUPForm(false);
         setUPEndpointInput('');
         setUPAuthKeyInput('');
@@ -245,6 +259,7 @@ export function SettingsNotifications() {
           }
         }}
         loading={!!loadingMap['webpush']}
+        helpText={tSettings("notifications.web_push_help")}
         aria-describedby="webpush-help"
       />
       
@@ -257,6 +272,7 @@ export function SettingsNotifications() {
         checked={upRegistered}
         onChange={handleUPToggle}
         loading={!!loadingMap['unifiedpush']}
+        helpText={tSettings("notifications.unified_push_help")}
         aria-describedby="unifiedpush-help"
       />
 
@@ -328,6 +344,7 @@ export function SettingsNotifications() {
               }
               onChange={async (next) => await toggleDefaultType(dt.key, next)}
               loading={!!loadingMap[`notifications.${dt.key}`]}
+              helpText={tSettings(`notifications.default_${dt.key}_help`)}
               aria-describedby={`notifications-help-${dt.key}`}
             />
           ))}
