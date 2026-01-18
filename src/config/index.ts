@@ -39,6 +39,10 @@ export const config = {
         default: process.env.NEXT_PUBLIC_FEATURES_DEFAULT_LOCALE || "en"
       }
     },
+    theme: {
+      default: process.env.NEXT_PUBLIC_THEME_DEFAULT || "",
+      valid: process.env.NEXT_PUBLIC_THEME_VALID || ""
+    },
     notifications: {
       webpush: {
         vapidPublicKey: process.env.NEXT_PUBLIC_WEBPUSH_VAPID_PUBLIC_KEY || ""
@@ -53,6 +57,10 @@ export const config = {
     },
     contact: {
       email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || ""
+    },
+    account: {
+      signupMode: process.env.NEXT_PUBLIC_ACCOUNT_SIGNUP_MODE || 'sign-up',
+      contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || ''
     },
     server_env: process.env.NEXT_PUBLIC_SERVER_ENV || ""
   }
