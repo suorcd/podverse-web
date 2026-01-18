@@ -1,4 +1,4 @@
-import { UITheme, setUIThemeOnDocument, toUITheme } from "./uiTheme";
+import { UITheme, setUIThemeOnDocument, toUITheme, getDefaultTheme } from "./uiTheme";
 import { ViewSelectedOption } from "../../components/ViewSelector/ViewSelector";
 import { clearCookie, readCookie, writeCookie } from "../cookie";
 import {
@@ -25,6 +25,7 @@ LocalSettingsState Legend:
     - rp = repeat
     - rd = random
   - fd = filterDefaults (per-page filter preferences)
+  - metd = membershipExpirationToastDismissed (ISO date string of last dismissal)
 */
 
 export type FilterDefaultsPage = 'home' | 'playlists' | 'podcasts' | 'podcasts-livestreams'
@@ -118,6 +119,7 @@ export interface LocalSettingsState {
     rd: boolean;
   }
   fd?: Partial<FilterDefaults>;
+  metd?: string; // membershipExpirationToastDismissed (ISO date string of last dismissal)
 }
 
 export function handleLocalSettingsUpdate(newState: LocalSettingsState) {
@@ -138,7 +140,7 @@ export function handleLocalSettingsUpdate(newState: LocalSettingsState) {
 }
 
 const defaultLocalSettings: LocalSettingsState = {
-  uit: "dark",
+  uit: getDefaultTheme(),
   vs: "grid",
   seda: false,
   aqc: {
@@ -158,7 +160,8 @@ function isValidLocalSettings(settings: any): settings is LocalSettingsState {
     settings.aqc !== null &&
     typeof settings.aqc.rp === 'boolean' &&
     typeof settings.aqc.rd === 'boolean' &&
-    (settings.fd === undefined || typeof settings.fd === 'object' && settings.fd !== null)
+    (settings.fd === undefined || typeof settings.fd === 'object' && settings.fd !== null) &&
+    (settings.metd === undefined || typeof settings.metd === 'string')
   );
 }
 

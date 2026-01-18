@@ -28,12 +28,11 @@ export const Footer: React.FC = () => {
         <div className={styles.footerLinks}>
           <Link href={ROUTES.CONTACT}>{tContact("contact")}</Link>
           <Link disabled href={ROUTES.ABOUT}>{tInfo("about")}</Link>
-          <Link disabled href={ROUTES.TERMS}>{tMisc("terms")}</Link>
-          <Link disabled href={ROUTES.MEMBERSHIP}>{tMembership("premium")}</Link>
-          <Link disabled href={ROUTES.MOBILE_APP}>{tMisc("mobile")}</Link>
+          <Link href={ROUTES.TERMS}>{tMisc("terms")}</Link>
+          <Link href={ROUTES.MEMBERSHIP}>{tMembership("premium")}</Link>
+          {/* <Link disabled href={ROUTES.MOBILE_APP}>{tMisc("mobile")}</Link> */}
           <Link disabled href={ROUTES.EMBED}>{tFeatures("embed")}</Link>
-          <Link disabled href={ROUTES.DONATE}>{tMisc("donate")}</Link>
-          <Link href={ROUTES.UPDATES}>{tMisc("updates")}</Link>
+          {/* <Link href={ROUTES.UPDATES}>{tMisc("updates")}</Link> */}
         </div>
         <div className={styles.footerSocialLinks}>
           <Link href={SOCIALS.DISCORD} color="secondary" target="_blank" rel="noopener noreferrer" aria-label={tSocials("discord")}>
