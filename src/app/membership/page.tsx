@@ -11,6 +11,7 @@ import { MembershipCTA } from "./MembershipCTA";
 import { getSSRLoggedInAccount } from "../../utils/auth/ssrAuth";
 import { getSSRApiRequestService } from "../../factories/apiRequestService";
 import { config } from "../../config";
+import { FEATURES } from "../../constants/features";
 import styles from "../../styles/app/membership/Membership.module.scss";
 
 type MembershipPricingData = {
@@ -37,6 +38,8 @@ type RenderIntroTextParams = {
   pricingData: MembershipPricingData | null;
   contactLinkClassName: string;
 };
+
+export const dynamic = 'force-dynamic';
 
 export default async function MembershipPage() {
   const t = await getTranslations("membership");
@@ -80,14 +83,6 @@ export default async function MembershipPage() {
     membershipExpiresAt && !isMembershipExpired
       ? calculateTimeRemaining(membershipExpiresAt)
       : { daysLeft: null, hoursLeft: null, minutesLeft: null };
-
-  // Placeholder features - user will update later
-  const features = [
-    { name: "Feature 1", free: true, premium: true },
-    { name: "Feature 2", free: false, premium: true },
-    { name: "Feature 3", free: false, premium: true },
-    { name: "Feature 4", free: true, premium: true },
-  ];
 
   return (
     <>
@@ -160,7 +155,7 @@ export default async function MembershipPage() {
 
             <section>
               <h2 className={styles.comparisonTitle}>{t("features")}</h2>
-              <FeatureComparison features={features} />
+              <FeatureComparison features={FEATURES} />
             </section>
           </MainInnerContentWrapper>
         </MainInnerWrapper>

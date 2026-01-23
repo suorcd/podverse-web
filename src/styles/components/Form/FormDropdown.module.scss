@@ -1,10 +1,11 @@
-@use '../../mixins/form.scss' as *;
+@use '../../mixins/form' as *;
 
 .wrapper {
   position: relative;
   display: flex;
   flex: 1;
   flex-direction: column;
+  margin-bottom: var(--spacing-3xl);
 }
 
 .headerRow {
@@ -16,14 +17,7 @@
 }
 
 .dropdownWrapper {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  flex-direction: row;
-  border-radius: var(--border-radius);
-  border: var(--button-border-size) solid transparent;
-  padding: 0.5rem 1rem;
-  background-color: var(--background-color-tertiary);
+  @include formInputWrapper;
 }
 
 .dropdownInnerWrapper {
@@ -37,14 +31,14 @@
   color: var(--text-color-link);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-  margin: 0 0 2px;
+  margin: 0 0 var(--spacing-form-label-bottom);
 }
 
 .dropdownButton {
   all: unset;
   font-size: var(--font-size-md);
   width: 100%;
-  padding: 0.25rem 0 0.25rem 0;
+  padding: var(--spacing-form-input-inner);
   cursor: pointer;
 }
 
@@ -54,4 +48,8 @@
 
 .dropdownSelectedItemText {
   flex: 1;
+}
+
+.formDropdownInfo {
+  @include formInfoText;
 }

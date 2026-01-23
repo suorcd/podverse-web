@@ -1,11 +1,11 @@
+@use '../../mixins/flexbox' as *;
+
 .message {
-  display: flex;
-  flex-direction: column;
+  @include flexColumn(var(--spacing-lg));
   align-items: center;
   justify-content: center;
   flex: 1;
-  gap: 1rem;
-  margin: 2rem 0;
+  margin: var(--spacing-4xl) var(--spacing-none);
 }
 
 .message p {

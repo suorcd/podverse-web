@@ -1,31 +1,31 @@
 @use '../../keyframes/' as *;
+@use '../../mixins/flexbox' as *;
+@use '../../mixins/layout' as *;
 
 .button {
-  align-items: center;
-  display: flex;
+  @include flexCenter;
   flex: 0 0 auto;
-  justify-content: center;
   position: relative;
   border-radius: 36px;
   font-weight: var(--font-weight-bold);
   height: 44px;
   min-width: 9rem;
-  padding: 0 16px;
+  width: auto;
+  padding: 0 var(--spacing-lg);
   overflow: hidden;
 }
 
 .button.unstyled {
   min-width: auto;
-  padding: 0;
+  padding: var(--spacing-none);
   height: auto;
   border-radius: 0;
 }
 
 .buttonContent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  @include flexCenter;
+  width: auto;
+  flex-shrink: 0;
 }
 
 .invisible {
@@ -34,12 +34,8 @@
 
 .spinnerWrapper {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include absoluteCenter;
+  @include flexCenter;
   pointer-events: none;
 }
 
@@ -50,8 +46,8 @@
 }
 
 .chevronIcon {
-  margin-left: 0.5rem;
-  padding-top: 1px;
+  margin-left: var(--spacing-md);
+  padding-top: 1px; // Keep 1px for visual centering
 }
 
 .primary {
@@ -149,7 +145,7 @@
   border: var(--button-border-size) solid var(--border-color-primary);
   height: 2rem;
   font-size: var(--font-size-sm);
-  padding: 0 1rem;
+  padding: var(--spacing-button-default);
   min-width: auto;
   font-weight: var(--font-weight-normal);
 }
@@ -160,7 +156,7 @@
   border: 1px solid var(--border-color-primary);
   height: 2rem;
   font-size: var(--font-size-sm);
-  padding: 0 1rem;
+  padding: var(--spacing-button-default);
   min-width: auto;
   font-weight: var(--font-weight-normal);
 }
@@ -171,7 +167,7 @@
   border: var(--button-border-size) solid var(--border-color-primary);
   height: 2rem;
   font-size: var(--font-size-sm);
-  padding: 0 1rem;
+  padding: var(--spacing-button-default);
   min-width: auto;
   font-weight: var(--font-weight-bold);
 }
@@ -182,7 +178,7 @@
   border: var(--button-border-size) solid var(--border-color-warning);
   height: 2rem;
   font-size: var(--font-size-sm);
-  padding: 0 1rem;
+  padding: var(--spacing-button-default);
   min-width: auto;
   font-weight: var(--font-weight-bold);
 }
@@ -193,7 +189,19 @@
   border: var(--button-border-size) solid var(--button-opaque-danger-border);
   height: 2rem;
   font-size: var(--font-size-sm);
-  padding: 0 1rem;
+  padding: var(--spacing-button-default);
   min-width: auto;
   font-weight: var(--font-weight-bold);
+}
+
+.buttonWrapper {
+  @include flexColumn(var(--spacing-xl));
+  align-items: flex-start;
+  width: fit-content;
+}
+
+.buttonDescription {
+  margin: var(--spacing-none);
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-base);
 }

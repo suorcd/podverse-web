@@ -45,11 +45,7 @@ export function showToastCustom(
 
 			return (
 				<div
-					className={`${toastClassName} ${styles.toastCustomWrapper}`}
-					style={{
-						opacity: t.visible ? 1 : 0,
-						transition: "opacity 0.2s ease-in-out"
-					}}
+					className={`${toastClassName} ${styles.toastCustomWrapper} ${t.visible ? styles.toastCustomWrapperVisible : styles.toastCustomWrapperHidden}`}
 				>
 					<div className={styles.toastContentColumn}>
 						<div>{message}</div>
@@ -146,6 +142,25 @@ export function showToastPromise<T>(
     }
   );
   return p;
+}
+
+/**
+ * Shows a loading toast that persists until manually dismissed.
+ * Returns the toast ID for later dismissal.
+ */
+export function showToastLoading(message: string, options?: ToastOptions): string {
+  return toast.loading(message, {
+    ...options,
+    className: styles.toast,
+    duration: Infinity
+  });
+}
+
+/**
+ * Dismisses a toast by its ID.
+ */
+export function dismissToast(toastId: string): void {
+  toast.dismiss(toastId);
 }
 
 export const Toast: React.FC = () => (
