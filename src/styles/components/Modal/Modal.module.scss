@@ -1,20 +1,17 @@
 @use "breakpoints";
+@use '../mixins/flexbox' as *;
+@use '../mixins/layout' as *;
 
 .modalRoot {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flexCenter;
 }
 
 .modalBackdrop {
-  position: absolute;
-  inset: 0;
+  @include fullCoverageWithBackdrop(absolute, 12px);
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .modalHeader {
@@ -35,7 +32,7 @@
 }
 
 .modalCloseButton {
-  margin-left: 1rem;
+  margin-left: var(--spacing-lg);
   background: var(--background-color-tertiary);
   border: none;
   cursor: pointer;
@@ -48,8 +45,15 @@
   z-index: 10000;
 }
 
+.modalCloseButtonAbsolute {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  margin-left: 0;
+}
+
 .modalChildren {
-  margin-top: 1rem;
+  margin-top: var(--spacing-lg);
 }
 
 .modalContent {
@@ -58,7 +62,7 @@
   background: var(--background-color-primary);
   border-radius: var(--border-radius);
   z-index: 1;
-  padding: 1.5rem;
+  padding: var(--spacing-modal-padding);
   display: flex;
   flex-direction: column;
   min-width: 360px;

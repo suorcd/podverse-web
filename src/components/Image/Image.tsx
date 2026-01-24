@@ -14,6 +14,7 @@ interface ImageProps {
   height: number;
   className?: string;
   skipProxy?: boolean;
+  priority?: boolean;
 }
 
 export const Image: React.FC<ImageProps> = ({
@@ -22,7 +23,8 @@ export const Image: React.FC<ImageProps> = ({
   width,
   height,
   className,
-  skipProxy
+  skipProxy,
+  priority
 }) => {
   const [imageError, setImageError] = useState(false);
 
@@ -34,11 +36,12 @@ export const Image: React.FC<ImageProps> = ({
         width={width}
         height={height}
         className={classNames(styles.imagePlaceholder, className)}
+        priority={priority}
       />
     );
   }
 
-  const finalSrc = skipProxy ? src : PROXY.PATH + src;
+  const finalSrc = skipProxy ? src : PROXY.PATH + encodeURIComponent(src);
 
   return (
     <NextImage
@@ -48,6 +51,7 @@ export const Image: React.FC<ImageProps> = ({
       height={height}
       className={className}
       onError={() => setImageError(true)}
+      priority={priority}
     />
   );
 };

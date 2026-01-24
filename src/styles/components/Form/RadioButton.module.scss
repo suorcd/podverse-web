@@ -1,8 +1,9 @@
+@use '../../mixins/flexbox' as *;
+
 .radioButton {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-2xl);
   position: relative;
-  display: flex;
-  flex-direction: column;
+  @include flexColumn;
   flex: 1;
 }
 
@@ -10,13 +11,11 @@
   color: var(--text-color-link);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-  margin: 0 0 8px;
+  margin: 0 0 var(--spacing-md);
 }
 
 .optionsWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include flexColumn(var(--spacing-md));
 }
 
 .option {
@@ -26,7 +25,7 @@
 }
 
 .radio {
-  margin-right: 0.5rem;
+  margin-right: var(--spacing-md);
   width: 1.25rem;
   height: 1.25rem;
 }

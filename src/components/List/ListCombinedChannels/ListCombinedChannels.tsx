@@ -1,8 +1,9 @@
 "use client";
 
 import { DTOChannel, QueryParamsMedium } from "podverse-helpers";
-import React from "react";
+import React, { useRef } from "react";
 import Pagination from "../../Pagination/Pagination";
+import { checkBackNavFlag } from "../../../contexts/Navigation";
 import { useSkipInitialEffect } from "../../../hooks/useSkipInitialEffect";
 import { scrollMainToTop } from "../../../utils/scroll";
 import { ViewSelectedOption } from "../../ViewSelector/ViewSelector";
@@ -21,7 +22,15 @@ type ListCombinedChannelsProps = {
 export const ListCombinedChannels: React.FC<ListCombinedChannelsProps> = ({
   page, setPage, channels, totalPages, filterMedium, viewSelected }) => {
   
+  // Track if we should skip scroll on the first effect run (back navigation case)
+  const skipScrollOnceRef = useRef(checkBackNavFlag());
+  
   useSkipInitialEffect(() => {
+    // Skip scroll-to-top once if this is a back navigation
+    if (skipScrollOnceRef.current) {
+      skipScrollOnceRef.current = false;
+      return;
+    }
     scrollMainToTop();
   }, [channels]);
   
@@ -30,7 +39,6 @@ export const ListCombinedChannels: React.FC<ListCombinedChannelsProps> = ({
   return (
     <Pagination
       currentPage={page}
-      maxButtons={5}
       totalPages={totalPages}
       setPage={setPage}
       paginationControlsClassName={styles.paginationControls}>

@@ -1,7 +1,11 @@
 .itemTranscriptRow {
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 0;
+  padding: var(--spacing-md) var(--spacing-none);
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 .speaker {
@@ -13,7 +17,7 @@
 .mainSection {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--spacing-lg);
 }
 
 .text {
@@ -25,5 +29,5 @@
   font-size: var(--font-size-md);
   color: var(--text-color-secondary);
   font-weight: var(--font-weight-light);
-  margin: 0 0.75rem;
+  margin: 0 var(--spacing-base);
 }

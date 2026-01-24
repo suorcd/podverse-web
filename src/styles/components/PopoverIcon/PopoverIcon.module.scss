@@ -1,14 +1,14 @@
+@use '../../mixins/flexbox' as *;
+
 .container {
   position: relative;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  @include flexCenter;
 }
 
 .iconButton {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  @include flexCenter;
   cursor: pointer;
   color: var(--text-color-secondary);
   transition: color 150ms ease;
@@ -21,7 +21,7 @@
 }
 
 .icon {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   width: 1em;
   height: 1em;
 }
@@ -33,7 +33,7 @@
   background: var(--background-color-primary);
   border: 1px solid var(--border-color-opaque);
   border-radius: var(--border-radius);
-  padding: 0.75rem;
+  padding: var(--spacing-base);
   z-index: 1000001;
   color: var(--text-color-primary);
   font-size: var(--font-size-sm);
@@ -52,7 +52,7 @@
   transform: translateX(-50%);
   border: 6px solid transparent;
   border-top-color: var(--background-color-primary);
-  margin-top: -1px;
+  margin-top: -1px; // Keep negative margin for arrow alignment
 }
 
 .popover::before {

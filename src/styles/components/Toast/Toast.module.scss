@@ -1,3 +1,5 @@
+@use '../../mixins/flexbox' as *;
+
 .toast {
   background: var(--background-color-contrast) !important;
   color: var(--text-color-contrast) !important;
@@ -17,16 +19,23 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
   border-radius: 8px;
   max-width: 350px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.toastCustomWrapperVisible {
+  opacity: 1;
+}
+
+.toastCustomWrapperHidden {
+  opacity: 0;
 }
 
 .toastContentColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include flexColumn(var(--spacing-md));
   flex: 1;
 }
 
@@ -34,9 +43,9 @@
   background: none;
   border: none;
   color: currentColor;
-  font-size: 1.5rem;
+  font-size: var(--font-size-xl);
   line-height: 1;
-  padding: 0;
+  padding: var(--spacing-none);
   cursor: pointer;
   opacity: 0.8;
   transition: opacity 0.15s ease;
