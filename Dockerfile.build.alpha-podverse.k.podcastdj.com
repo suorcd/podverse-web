@@ -18,6 +18,7 @@ COPY . .
 # If you meant to use the example file, change this line.
 COPY ./env/alpha-podverse.k.podcastdj.com.env ./.env.production 
 
+ENV NODE_ENV=production
 RUN npm run build
 
 # Stage 3: Run the app
